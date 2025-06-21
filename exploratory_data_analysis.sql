@@ -20,7 +20,7 @@ ORDER BY total_laid_off DESC;
 SELECT MIN(`date`), MAX(`date`)
 FROM world_layoffs.layoffs_staging2;
 
--- Companies and industries with the most layoff
+-- Most layoff by different metrics, percentage isn't useful without the total employees
 
 SELECT company, SUM(total_laid_off) AS sum_laid_off
 FROM world_layoffs.layoffs_staging2
@@ -30,4 +30,19 @@ ORDER BY sum_laid_off DESC;
 SELECT industry, SUM(total_laid_off) AS sum_laid_off
 FROM world_layoffs.layoffs_staging2
 GROUP BY industry
+ORDER BY sum_laid_off DESC;
+
+SELECT country, SUM(total_laid_off) AS sum_laid_off
+FROM world_layoffs.layoffs_staging2
+GROUP BY country
+ORDER BY sum_laid_off DESC;
+
+SELECT YEAR(`date`) AS date_by_year, SUM(total_laid_off) AS sum_laid_off
+FROM world_layoffs.layoffs_staging2
+GROUP BY date_by_year
+ORDER BY date_by_year DESC;
+
+SELECT stage, SUM(total_laid_off) AS sum_laid_off
+FROM world_layoffs.layoffs_staging2
+GROUP BY stage
 ORDER BY sum_laid_off DESC;
