@@ -67,3 +67,28 @@ SELECT `month`, sum_laid_off,
 SUM(sum_laid_off) OVER(ORDER BY `month`) AS rolling_total
 FROM Rolling_Total;
 
+
+-- Ranking companys by each year layoff
+
+SELECT company, YEAR(`date`) AS date_by_year, SUM(total_laid_off) AS laid_by_year
+FROM world_layoffs.layoffs_staging2
+GROUP BY company, date_by_year
+ORDER BY laid_by_year DESC;
+
+WITH Company_Year (Company, Years, Total_Laid_Off) AS
+(
+SELECT company, YEAR(`date`) AS date_by_year, SUM(total_laid_off)
+FROM world_layoffs.layoffs_staging2
+GROUP BY company, date_by_year
+),
+Company_Year_Ranks AS
+(
+SELECT *,
+DENSE_RANK() OVER(PARTITION BY Years ORDER BY Total_Laid_Off DESC) AS ranking
+FROM Company_Year
+WHERE Years IS NOT NULL
+)
+SELECT *
+FROM Company_Year_Ranks
+WHERE ranking <= 5;
+
